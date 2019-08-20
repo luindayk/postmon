@@ -71,3 +71,22 @@ def report(provider, track):
             url,
             headers=headers,
             data=json.dumps(data))
+
+    lastCheck = obj.pop('historico').pop()['situacao'].lower().find('bjeto entregue')
+
+    if int(lastCheck):
+        db.packtrack.remove(provider, track)
+
+
+
+def correios_check():
+    url = os.getenv(
+        "CORREIOS_WWW2_URL",
+        'https://www2.correios.com.br/sistemas/rastreamento/ctrl/ctrlRastreamento.cfm'
+    )
+
+    try:
+        r = requests.get(url, timeout=1)
+        return True
+    except:
+        return False

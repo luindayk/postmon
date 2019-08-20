@@ -107,7 +107,7 @@ class PackTrack(object):
         return obj
 
     def get_all(self):
-        objs = list(self._collection.find())
+        objs = list(self._collection.find().sort('_meta.checked_at', pymongo.ASCENDING).limit(10))
         for obj in objs:
             self._patch(obj)
         return objs
@@ -144,3 +144,7 @@ class PackTrack(object):
 
         query = {"$set": set_}
         self._collection.update(key, query)
+
+    def remove(self, provider, track):
+        key = {'servico': provider, 'codigo': track}
+        self._collection.remove(key)
